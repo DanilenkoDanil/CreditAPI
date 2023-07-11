@@ -41,7 +41,7 @@
        "interest_rate": 0.1
      }
      ````
-   Примітка. В параметрі periodicity вказано pk запису відповідного обьекту, готові варіанти можно подивитися в адмінці `http://localhost:8000/admin/` (admin:admin).
+   Примітка: В параметрі periodicity зазначено pk запису відповідного об'єкту. Готові варіанти можна переглянути у адмінці за посиланням http://localhost:8000/admin/ (admin:admin).
 
 2. Зміна суми тіла платежу:
    - URL: `http://localhost:8000/api/reduce-principal/{credit_id}/{payment_id}/`
