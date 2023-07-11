@@ -12,7 +12,7 @@
    ```bash
    git clone https://github.com/DanilenkoDanil/CreditAPI.git
    cd CreditAPI
-   ``
+   ```
 
 2. Запустіть Docker Compose для збирання та запуску контейнерів:
 
@@ -29,7 +29,7 @@
 Ви можете використовувати будь-який інструмент для надсилання HTTP-запитів (наприклад, curl або Postman), щоб взаємодіяти з API-сервісом. Нижче наведені приклади використання кількох ендпоінтів:
 
 1. Створення графіка платежів:
-   - URL: `http://localhost:8000/api/payment-schedule/`
+   - URL: `http://localhost:8000/api/create-payment-schedule/`
    - Метод: POST
    - Тіло запиту (JSON):
      ```json
