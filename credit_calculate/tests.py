@@ -2,6 +2,7 @@ from datetime import date
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory
 from rest_framework import status
+from decimal import Decimal, ROUND_HALF_UP
 from .views import CreatePaymentScheduleView, ReducePrincipalView
 from .models import Credit, Payment, Period
 
@@ -28,9 +29,19 @@ class CreatePaymentScheduleViewTestCase(TestCase):
 
         payment_schedule = response.data
         self.assertEqual(len(payment_schedule), 12)
-        self.assertEqual(payment_schedule[0]['principal'], 1000 / 12)
-        self.assertEqual(payment_schedule[0]['interest'], 1000 * 0.05)
-        self.assertEqual(payment_schedule[1]['interest'], (1000 - 1000 / 12) * 0.05)
+
+        self.assertEqual(
+            payment_schedule[0]['principal'],
+            Decimal(1000 / 12).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        )
+        self.assertEqual(
+            payment_schedule[0]['interest'],
+            Decimal(1000 * 0.05).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        )
+        self.assertEqual(
+            payment_schedule[1]['interest'],
+            Decimal((1000 - 1000 / 12) * 0.05).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        )
 
         self.assertEqual(Credit.objects.count(), 1)
         self.assertEqual(Payment.objects.count(), 12)
