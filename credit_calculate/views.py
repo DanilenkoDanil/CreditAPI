@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import timedelta
 from credit_calculate.models import Credit, Payment
+from decimal import Decimal, ROUND_HALF_UP
 from credit_calculate.serializers import CreditSerializer, PaymentSerializer
 
 
@@ -39,9 +40,12 @@ class CreatePaymentScheduleView(APIView):
         payment_date = credit.loan_start_date + timedelta(days=date_delta)
 
         for _ in range(credit.number_of_payments):
-            interest_payment = remaining_balance * credit.interest_rate
+            interest_payment = remaining_balance * credit.interest_rate * credit.periodicity.days_count / 365
             principal_payment = credit.amount / credit.number_of_payments
             remaining_balance -= principal_payment
+
+            interest_payment = Decimal(interest_payment).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+            principal_payment = Decimal(principal_payment).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
             payment = Payment.objects.create(
                 credit=credit,
@@ -104,8 +108,11 @@ class ReducePrincipalView(APIView):
 
         for payment in payments:
             payment.principal += increase_principal
-            payment.interest = remaining_balance * credit.interest_rate
+            payment.interest = remaining_balance * credit.interest_rate * credit.periodicity.days_count / 365
             remaining_balance -= payment.principal
+
+            payment.interest = Decimal(payment.interest).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
             payment.save()
 
         return new_payments
