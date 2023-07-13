@@ -32,15 +32,15 @@ class CreatePaymentScheduleViewTestCase(TestCase):
 
         self.assertEqual(
             payment_schedule[0]['principal'],
-            Decimal(1000 / 12).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+            float(Decimal(1000 / 12).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP))
         )
         self.assertEqual(
             payment_schedule[0]['interest'],
-            Decimal(1000 * 0.05).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+            float(Decimal(1000 * 0.05 * 31 / 365).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP))
         )
         self.assertEqual(
             payment_schedule[1]['interest'],
-            Decimal((1000 - 1000 / 12) * 0.05).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+            float(Decimal((1000 - 1000 / 12) * 0.05 * 31 / 365).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP))
         )
 
         self.assertEqual(Credit.objects.count(), 1)
